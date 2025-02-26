@@ -5,10 +5,29 @@ import "./Navbar.css";
 const Navbar = () => {
 
   const [showPopup, setShowPopup] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const [popupType, setPopupType] = useState(""); // 'login' or 'signup'
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formData, setFormData] = useState({ username: '', email: '', password: '', fullName: '', number: '' })
   const url = import.meta.env.VITE_URL;
+  const [user, setUser] = useState({
+    username: '',
+    email: '',
+    fullName: '',
+    number: ''
+  });
+  function updateUser(){
+      setUser({
+        username: localStorage.getItem("username"),
+        fullName: localStorage.getItem("fullName"),
+        number: localStorage.getItem("number"),
+        email: localStorage.getItem("email"),
+      });
+    }
+
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -75,7 +94,11 @@ const Navbar = () => {
 
         localStorage.setItem("token", result.data.accessToken);
         localStorage.setItem("username", result.data.user.username); // Store username
-
+        localStorage.setItem("fullName", result.data.user.fullName); // Store fullname
+        localStorage.setItem("email", result.data.user.email); // Store email
+        localStorage.setItem("number", result.data.user.number); // Store number
+        updateUser();
+        
         setIsLoggedIn(true);
         ClosePopup();
       } else {
@@ -105,9 +128,9 @@ const Navbar = () => {
 
       const result = await response.json();
       if (response.ok) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
+        localStorage.clear();
         setIsLoggedIn(false);
+        setShowSidebar(false);
         alert(result.message);
       } else {
         alert(result.message || "Logout failed");
@@ -122,6 +145,7 @@ const Navbar = () => {
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setIsLoggedIn(true);
+      updateUser();
     }
   }, []);
 
@@ -152,7 +176,7 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <div className="user-icon" onClick={handleLogout}>
+            <div className="user-icon" onClick={toggleSidebar}>
               👤 {localStorage.getItem("username")}
             </div>
           )}
@@ -217,6 +241,21 @@ const Navbar = () => {
                 {popupType === "login" ? "Login" : "Sign Up"}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Sidebar for user details */}
+       {showSidebar && (
+        <div className="sidebar">
+          <div className="sidebar-content">
+            <button className="close-btn" onClick={toggleSidebar}>✖</button>
+            {/* <img src={user.profileImage} alt="Profile" className="sidebar-pic" /> */}
+            <h3>{user.fullName}</h3>
+            <h2>{user.username}</h2>
+            <p>{user.email}</p>
+            <p>{user.number}</p>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </div>
         </div>
       )}
