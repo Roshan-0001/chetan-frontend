@@ -6,9 +6,10 @@ const Navbar = () => {
 
   const [showPopup, setShowPopup] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [role, setRole] = useState("user");
   const [popupType, setPopupType] = useState(""); // 'login' or 'signup'
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [formData, setFormData] = useState({ username: '', email: '', password: '', fullName: '', number: '' })
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', number: '', shopType: '', description: '', address: '', profileImage: null })
   const url = import.meta.env.VITE_URL;
   const [user, setUser] = useState({
     username: '',
@@ -16,14 +17,15 @@ const Navbar = () => {
     fullName: '',
     number: ''
   });
-  function updateUser(){
-      setUser({
-        username: localStorage.getItem("username"),
-        fullName: localStorage.getItem("fullName"),
-        number: localStorage.getItem("number"),
-        email: localStorage.getItem("email"),
-      });
-    }
+  function updateUser() {
+    setUser({
+      username: localStorage.getItem("username"),
+      fullName: localStorage.getItem("fullName"),
+      number: localStorage.getItem("number"),
+      email: localStorage.getItem("email"),
+      role: localStorage.getItem("role"),
+    });
+  }
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -31,8 +33,11 @@ const Navbar = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
-
   }
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, profileImage: e.target.files[0] });
+  };
 
   // Open login/signup popup
   const OpenPopup = (type) => {
@@ -50,27 +55,52 @@ const Navbar = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('username', formData.username);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('password', formData.password);
+      formDataToSend.append('number', formData.number);
+      formDataToSend.append('address', formData.address);
+      formDataToSend.append('shopType', formData.shopType);
+      formDataToSend.append('description', formData.description);
 
-      const response = await fetch(url + '/admin/register-admin', {
+      // Append file if selected
+      if (formData.profileImage) {
+        formDataToSend.append('profileImage', formData.profileImage);
+      }
+
+      console.log("FormData:", [...formDataToSend.entries()]); // Debugging
+
+      const response = await fetch(url + '/api/user/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
+      console.log(JSON.stringify(FormData));
+
+
 
       const result = await response.json();
 
       if (response.ok) {
-        setFormData({ username: '', email: '', password: '' });
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          number: '',
+          address: '',
+          shopType: '',
+          description: '',
+          profileImage: null,
+        });
         alert("Registration Successful");
         console.log('Registration successful:', result);
-
+        ClosePopup();
+      } else {
+        alert(result.message || 'Signup failed');
       }
-      ClosePopup();
     } catch (error) {
       alert(error.response?.data?.message || "Signup failed");
-      console.log('Registration failed:', result);
+      console.log('Registration failed:', error);
     }
   };
 
@@ -79,7 +109,11 @@ const Navbar = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(url + "/admin/login-admin", {
+      const apiUrl = {
+        admin: `${url}/admin/login-admin`,
+        user: `${url}/api/user/login`,
+      }[role];
+      const response = await fetch(apiUrl, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -94,11 +128,11 @@ const Navbar = () => {
 
         localStorage.setItem("token", result.data.accessToken);
         localStorage.setItem("username", result.data.user.username); // Store username
-        localStorage.setItem("fullName", result.data.user.fullName); // Store fullname
+        localStorage.setItem("role", role); // Store role of the user
         localStorage.setItem("email", result.data.user.email); // Store email
         localStorage.setItem("number", result.data.user.number); // Store number
         updateUser();
-        
+
         setIsLoggedIn(true);
         ClosePopup();
       } else {
@@ -116,8 +150,13 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("token");
+      const type = localStorage.getItem("role");
+      const apiUrl = {
+        admin: `${url}/admin/logout-admin`,
+        user: `${url}/api/user/logout`,
+      }[type];
 
-      const response = await fetch(url + "/admin/logout-admin", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -194,31 +233,30 @@ const Navbar = () => {
             <h2 className="popup-heading">{popupType === "login" ? "Login" : "Sign Up"}</h2>
 
             <form onSubmit={popupType === "login" ? handleLogin : handleSignup}>
-              {popupType === "signup" && (
-                <><input
-                  type="string"
-                  id="fullName"
-                  placeholder="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  required
-                />
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    type="number"
-                    id="number"
-                    placeholder="number"
-                    value={formData.number}
-                    onChange={handleChange}
-                    required
-                  />
+              {popupType === "login" && (
+                <>
+                  <div className="role-toggle">
+                    <label>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="admin"
+                        checked={role === "admin"}
+                        onChange={() => setRole("admin")}
+                      />
+                      Admin
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="user"
+                        checked={role === "user"}
+                        onChange={() => setRole("user")}
+                      />
+                      User
+                    </label>
+                  </div>
                 </>
               )}
               <input
@@ -227,7 +265,7 @@ const Navbar = () => {
                 id="username"
                 value={formData.username}
                 onChange={handleChange}
-                required
+              // required
               />
               <input
                 type="password"
@@ -235,8 +273,62 @@ const Navbar = () => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
-                required
+              // required
               />
+              {popupType === "signup" && (
+                <><input
+                  type="text"
+                  id="address"
+                  placeholder="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                // required
+                />
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  // required
+                  />
+                  <input
+                    type="number"
+                    id="number"
+                    placeholder="number"
+                    value={formData.number}
+                    onChange={handleChange}
+                  // required
+                  />
+                  <select name="shopType" id="shopType" value={formData.shopType} onChange={handleChange} >
+                    <option value="">Select Shop Type</option>
+                    <option value="grocery">Grocery</option>
+                    <option value="bakery">Bakery</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="stationary">Stationary</option>
+                    <option value="pharmacy">Pharmacy</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="cosmetics">Cosmetics</option>
+                    <option value="internet-cafe">Internet Cafe</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <input type="file"
+                    name="profileImage"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    required
+                  />
+                  <textarea
+                    name="description"
+                    placeholder="Description"
+                    id="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                  // required
+                  />
+                </>
+              )}
               <button type="submit" className="popup-btn btn">
                 {popupType === "login" ? "Login" : "Sign Up"}
               </button>
@@ -246,12 +338,12 @@ const Navbar = () => {
       )}
 
       {/* Sidebar for user details */}
-       {showSidebar && (
+      {showSidebar && (
         <div className="sidebar">
           <div className="sidebar-content">
             <button className="close-btn" onClick={toggleSidebar}>✖</button>
             {/* <img src={user.profileImage} alt="Profile" className="sidebar-pic" /> */}
-            <h3>{user.fullName}</h3>
+            <h3>{user.role}</h3>
             <h2>{user.username}</h2>
             <p>{user.email}</p>
             <p>{user.number}</p>
