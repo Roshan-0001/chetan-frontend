@@ -18,7 +18,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     color: darkgrey;
     position: sticky;
-    background-color: rgba(46, 46, 46, 0.362);
+    background-color: rgb(46, 46, 46);
   }
   
   /* Logo */
@@ -39,7 +39,7 @@
   .search-bar input {
     width: 100%;
     padding: 15px;
-    background-color: #fdfdfd7c;
+    background-color: #fdfdfdbc;
     border: none;
     border-radius: 5px;
     max-width: 60%;
@@ -48,7 +48,7 @@
     border-color: black;
   }
   input::placeholder, textarea::placeholder {
-    color: rgb(200, 200, 200);
+    color: rgb(134, 134, 134);
     font-weight: 600;
   }
   select {

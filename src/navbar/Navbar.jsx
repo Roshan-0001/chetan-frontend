@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Navbar.css";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
 
@@ -203,7 +204,7 @@ const Navbar = () => {
         {/* Navigation Links */}
         <div className="nav-links">
           <a href="#">Products</a>
-          <a href="#">Orders</a>
+          <a><Link to="/admin">Admin Page</Link></a>
 
           {!isLoggedIn ? (
             <>
