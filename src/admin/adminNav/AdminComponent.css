@@ -1,0 +1,64 @@
+.viewUserContainer {
+    /* width: 50%; */
+    margin: auto;
+    text-align: center;
+  }
+  
+  .viewUserForm {
+    padding: 50px 20px ;
+    display: flex;
+    flex-direction: column;
+    /* flex- */
+    gap: 10px;
+    /* margin-bottom: 20px; */
+    align-items: center;
+  }
+  
+.viewUserInput {
+    margin: 10px auto;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border-color: gray;
+    /* width: 100%; */
+    font-size: 16px;
+    color: black;
+  }
+  
+  .viewUserBtn {
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .viewUserBtn:hover{
+    background-color: rgba(0, 0, 255, 0.725);
+  }
+  
+  .error {
+    color: red;
+  }
+  
+  .user-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: left;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  .user-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .delete-btn{
+    background-color: red;
+  }
+  

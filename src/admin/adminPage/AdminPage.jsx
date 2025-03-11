@@ -3,7 +3,7 @@ import { FaUsers, FaUserPlus, FaTrash, FaCommentDots, FaUserCog, FaUserAlt } fro
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import "./AdminPage.css"; // Import CSS file
 import { useNavigate } from "react-router-dom";
-import ViewAllUsers from "../adminNav/AdminComponent";
+import { ViewAllUsers, ViewAndDeleteUser, ViewUser } from "../adminNav/AdminComponent";
 
 const AdminPanel = () => {
   const [selectedOption, setSelectedOption] = useState("viewUsers");
@@ -20,10 +20,10 @@ const AdminPanel = () => {
 
   const renderContent = () => {
     switch (selectedOption) {
-      case "viewUsers":
-        return <h2>View Users (Shops List)</h2>;
+      case "searchUser":
+        return <ViewUser />;
       case "deleteUser":
-        return <h2>Delete User (Remove Shop)</h2>;
+        return <ViewAndDeleteUser />;
       case "registerUser":
         return <h2>Register New User (New Shop)</h2>;
       case "registerAdmin":
@@ -41,7 +41,7 @@ const AdminPanel = () => {
       <aside className="admin-sidebar">
         <h1 className="admin-logo">Admin Panel</h1>
         <ul className="menu">
-          <li onClick={() => setSelectedOption("viewUsers")}><FaUsers /> View Users</li>
+          <li onClick={() => setSelectedOption("searchUser")}><FaUsers /> Search Users</li>
           <li onClick={() => setSelectedOption("deleteUser")}><FaTrash /> Delete User</li>
           <li onClick={() => setSelectedOption("registerUser")}><FaUserPlus /> Register User</li>
           <li onClick={() => setSelectedOption("registerAdmin")}><MdOutlineAdminPanelSettings /> Register Admin</li>
