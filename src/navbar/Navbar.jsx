@@ -69,14 +69,10 @@ const Navbar = () => {
       if (formData.profileImage) {
         formDataToSend.append('profileImage', formData.profileImage);
       }
-
-      console.log("FormData:", [...formDataToSend.entries()]); // Debugging
-
       const response = await fetch(url + '/api/user/register', {
         method: 'POST',
         body: formDataToSend,
       });
-      console.log(JSON.stringify(FormData));
 
 
 

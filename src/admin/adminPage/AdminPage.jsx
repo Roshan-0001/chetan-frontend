@@ -3,7 +3,7 @@ import { FaUsers, FaUserPlus, FaTrash, FaCommentDots, FaUserCog, FaUserAlt } fro
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import "./AdminPage.css"; // Import CSS file
 import { useNavigate } from "react-router-dom";
-import { ViewAllUsers, ViewAndDeleteUser, ViewUser, RegisterAdmin, RegisterUser, AdminLogoutBtn } from "../adminNav/AdminComponent";
+import { ViewAllUsers, ViewAndDeleteUser, ViewUser, RegisterAdmin, RegisterUser, AdminLogoutBtn, ViewAllAdmins } from "../adminNav/AdminComponent";
 
 const AdminPanel = () => {
   const [selectedOption, setSelectedOption] = useState("viewUsers");
@@ -30,6 +30,8 @@ const AdminPanel = () => {
         return <RegisterAdmin />;
       case "viewAll":
         return <ViewAllUsers />;
+      case "viewAllAdmin":
+        return <ViewAllAdmins />;
       default:
         return <h2>Select an option</h2>;
     }
@@ -46,6 +48,7 @@ const AdminPanel = () => {
           <li onClick={() => setSelectedOption("registerUser")}><FaUserPlus /> Register User</li>
           <li onClick={() => setSelectedOption("registerAdmin")}><MdOutlineAdminPanelSettings /> Register Admin</li>
           <li onClick={() => setSelectedOption("viewAll")}><FaUserCog /> View All Users</li>
+          <li onClick={() => setSelectedOption("viewAllAdmin")}><FaUserCog /> View All admins</li>
         </ul>
       </aside>
 

@@ -4,6 +4,93 @@ import { useNavigate } from "react-router-dom";
 
 const url = import.meta.env.VITE_URL;
 
+const ViewAllAdmins = () => {
+    const [admins, setAdmins] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+                const response = await fetch(url + "/admin/view-all-admins", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const result = await response.json();
+
+                // Extract users array from response
+                setAdmins(Array.isArray(result.data) ? result.data : []);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    const handleDelete = async (_id) => {
+        if (!window.confirm("Are you sure you want to delete this admin?")) return;
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(url + "/admin/delete-admin", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "content-Type": "application/json",
+                },
+                body: JSON.stringify({ _id }),
+            });
+
+            if (response.ok) {
+                alert("Admin deleted successfully!");
+                setAdmins((prevAdmins) => prevAdmins.filter(admin => admin._id !== _id));// Update state
+            } else {
+                alert("Failed to delete admin.");
+            }
+        } catch (error) {
+            console.error("Error deleting admin:", error);
+        }
+    };
+
+    return (
+        <div>
+            <h2>All Admins</h2>
+            {admins.length === 0 ? (
+                <p>No Admin found</p>
+            ) : (
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Fullname</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Number</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {admins.map((admin) => (
+                            <tr key={admin._id}>
+                                <td>{admin.fullName}</td>
+                                <td>{admin.username}</td>
+                                <td>{admin.email}</td>
+                                <td>{admin.number}</td>
+                                <td>
+                                    {["yogita", "papa", "roshan123"].includes(admin.username) ? (
+                                        <span style={{ backgroundColor: "red" ,padding: "2px 4px", borderRadius: "3px"}}>Protected</span> // Show text instead of button
+                                    ) : (
+                                        <button onClick={() => handleDelete(admin._id)}>Delete</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+        </div>
+    );
+};
 const ViewAllUsers = () => {
     const [users, setUsers] = useState([]);
 
@@ -409,9 +496,6 @@ const RegisterUser = () => {
             if (formData.profileImage) {
                 formDataToSend.append('profileImage', formData.profileImage);
             }
-
-            console.log("FormData:", [...formDataToSend.entries()]);
-
             const token = localStorage.getItem("token"); // Get auth token
             const response = await fetch(url + "/admin/register-user", {
                 method: "POST",
@@ -420,8 +504,6 @@ const RegisterUser = () => {
                 },
                 body: formDataToSend,
             });
-            console.log(JSON.stringify(FormData));
-
             const data = await response.json();
 
             if (response.ok) {
@@ -474,42 +556,40 @@ const RegisterUser = () => {
 };
 
 const AdminLogoutBtn = () => {
-    console.log("step : 1");
-  const navigate = useNavigate(); // Move useNavigate() inside the component
+    const navigate = useNavigate(); // Move useNavigate() inside the component
 
-  const handleAdminLogout = async () => {
-    const token = localStorage.getItem("token"); // Use getItem instead of direct access
+    const handleAdminLogout = async () => {
+        const token = localStorage.getItem("token"); // Use getItem instead of direct access
 
-    try {
-        console.log("step : 2");
-        
-      const response = await fetch(url + "/admin/logout-admin", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+        try {
 
-      const result = await response.json();
-      if (response.ok) {
-        localStorage.clear();
-        alert(result.message);
-        navigate("/"); // Navigate to home page
-      } else {
-        alert(result.message || "Logout failed");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+            const response = await fetch(url + "/admin/logout-admin", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
 
-  return (
-    <button onClick={handleAdminLogout}>Logout</button>
-  );
+            const result = await response.json();
+            if (response.ok) {
+                localStorage.clear();
+                alert(result.message);
+                navigate("/"); // Navigate to home page
+            } else {
+                alert(result.message || "Logout failed");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return (
+        <button onClick={handleAdminLogout}>Logout</button>
+    );
 };
 
 
 
-export { ViewAllUsers, ViewUser, ViewAndDeleteUser, RegisterAdmin, RegisterUser, AdminLogoutBtn };
+export { ViewAllAdmins, ViewAllUsers, ViewUser, ViewAndDeleteUser, RegisterAdmin, RegisterUser, AdminLogoutBtn };
