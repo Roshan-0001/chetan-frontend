@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./AdminComponent.css"
+import "./AdminComponent.css";
+import { useNavigate } from "react-router-dom";
 
 const url = import.meta.env.VITE_URL;
 
@@ -221,7 +222,7 @@ const ViewAndDeleteUser = () => {
 
     return (
         <div className="viewUserContainer">
-            <h2>Search User</h2>
+            <h2>Search here to delete the User</h2>
 
             <div className="viewUserForm">
                 <input
@@ -272,4 +273,243 @@ const ViewAndDeleteUser = () => {
 };
 
 
-export { ViewAllUsers, ViewUser, ViewAndDeleteUser };
+const RegisterAdmin = () => {
+    const [formData, setFormData] = useState({
+        username: "",
+        fullName: "",
+        email: "",
+        password: "",
+        number: "",
+    });
+    const token = localStorage.token;
+
+    const [message, setMessage] = useState("");
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleRegister = async () => {
+        const token = localStorage.getItem("token"); // Retrieve stored admin token
+        try {
+            const response = await fetch(url + "/admin/register-admin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setMessage(`${data.data.username} registered as admin successfully!`);
+            } else {
+                setMessage(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            setMessage("Registration failed. Please try again.");
+        }
+    };
+
+    return (
+        <div>
+            <h2>Register New Admin</h2>
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+            />
+            <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleChange}
+            />
+            <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+            />
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+            />
+            <input
+                type="number"
+                name="number"
+                placeholder="Phone Number"
+                value={formData.number}
+                onChange={handleChange}
+            />
+            <button onClick={handleRegister}>Register Admin</button>
+            {message && <p>{message}</p>}
+        </div>
+    );
+};
+
+const RegisterUser = () => {
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        number: "",
+        address: "",
+        shopType: "",
+        description: "",
+        profileImage: null,
+    });
+
+    const [message, setMessage] = useState("");
+
+    const shopTypes = [
+        "grocery",
+        "bakery",
+        "restaurant",
+        "stationary",
+        "pharmacy",
+        "clothing",
+        "electronics",
+        "cosmetics",
+        "internet-cafe",
+        "other",
+    ];
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFileChange = (e) => {
+        setFormData({ ...formData, profileImage: e.target.files[0] });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+
+            const formDataToSend = new FormData();
+            formDataToSend.append('username', formData.username);
+            formDataToSend.append('email', formData.email);
+            formDataToSend.append('password', formData.password);
+            formDataToSend.append('number', formData.number);
+            formDataToSend.append('address', formData.address);
+            formDataToSend.append('shopType', formData.shopType);
+            formDataToSend.append('description', formData.description);
+
+            // Append file if selected
+            if (formData.profileImage) {
+                formDataToSend.append('profileImage', formData.profileImage);
+            }
+
+            console.log("FormData:", [...formDataToSend.entries()]);
+
+            const token = localStorage.getItem("token"); // Get auth token
+            const response = await fetch(url + "/admin/register-user", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`, // Send token for authentication
+                },
+                body: formDataToSend,
+            });
+            console.log(JSON.stringify(FormData));
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage("User registered successfully!");
+                setFormData({
+                    username: "",
+                    email: "",
+                    password: "",
+                    number: "",
+                    address: "",
+                    shopType: "",
+                    description: "",
+                    profileImage: null,
+                });
+            } else {
+                setMessage(data.message || "Registration failed.");
+            }
+        } catch (error) {
+            setMessage("An error occurred. Please try again.");
+        }
+    };
+
+    return (
+        <div>
+            <h2>Register New User</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
+                <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+                <input type="number" name="number" placeholder="Phone Number" value={formData.number} onChange={handleChange} required />
+                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
+
+                <select name="shopType" value={formData.shopType} onChange={handleChange}>
+                    <option value="">Select Shop Type</option>
+                    {shopTypes.map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                    ))}
+                </select>
+
+                <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} required />
+
+                <input type="file" accept="image/*" name="profileImage" onChange={handleFileChange} required />
+
+                <button type="submit">Register</button>
+            </form>
+
+            {message && <p>{message}</p>}
+        </div>
+    );
+};
+
+const AdminLogoutBtn = () => {
+    console.log("step : 1");
+  const navigate = useNavigate(); // Move useNavigate() inside the component
+
+  const handleAdminLogout = async () => {
+    const token = localStorage.getItem("token"); // Use getItem instead of direct access
+
+    try {
+        console.log("step : 2");
+        
+      const response = await fetch(url + "/admin/logout-admin", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        localStorage.clear();
+        alert(result.message);
+        navigate("/"); // Navigate to home page
+      } else {
+        alert(result.message || "Logout failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <button onClick={handleAdminLogout}>Logout</button>
+  );
+};
+
+
+
+export { ViewAllUsers, ViewUser, ViewAndDeleteUser, RegisterAdmin, RegisterUser, AdminLogoutBtn };

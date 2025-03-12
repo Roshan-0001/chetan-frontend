@@ -204,7 +204,7 @@ const Navbar = () => {
         {/* Navigation Links */}
         <div className="nav-links">
           <a href="#">Products</a>
-          <a><Link to="/admin">Admin Page</Link></a>
+          <Link to="/admin">Admin Page</Link>
 
           {!isLoggedIn ? (
             <>

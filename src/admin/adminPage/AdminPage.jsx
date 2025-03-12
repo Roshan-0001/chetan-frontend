@@ -3,7 +3,7 @@ import { FaUsers, FaUserPlus, FaTrash, FaCommentDots, FaUserCog, FaUserAlt } fro
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import "./AdminPage.css"; // Import CSS file
 import { useNavigate } from "react-router-dom";
-import { ViewAllUsers, ViewAndDeleteUser, ViewUser } from "../adminNav/AdminComponent";
+import { ViewAllUsers, ViewAndDeleteUser, ViewUser, RegisterAdmin, RegisterUser, AdminLogoutBtn } from "../adminNav/AdminComponent";
 
 const AdminPanel = () => {
   const [selectedOption, setSelectedOption] = useState("viewUsers");
@@ -25,9 +25,9 @@ const AdminPanel = () => {
       case "deleteUser":
         return <ViewAndDeleteUser />;
       case "registerUser":
-        return <h2>Register New User (New Shop)</h2>;
+        return <RegisterUser />;
       case "registerAdmin":
-        return <h2>Register New Admin</h2>;
+        return <RegisterAdmin />;
       case "viewAll":
         return <ViewAllUsers />;
       default:
@@ -58,10 +58,11 @@ const AdminPanel = () => {
             <FaCommentDots className="icon" />
             <FaUserAlt className="icon" onClick={() => document.getElementById("profileDropdown").classList.toggle("show")} />
             <div id="profileDropdown" className="profile-dropdown">
-              <p>Admin Name</p>
-              <p>admin@example.com</p>
+              <p>Name: {localStorage.username}</p>
+              <p>Email: {localStorage.email}</p>
+              <p>Number: {localStorage.number}</p>
               <hr />
-              {/* <button onClick={() => alert("Logging out...")}>Logout</button> */}
+              <AdminLogoutBtn/>
             </div>
           </div>
         </nav>
