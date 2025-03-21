@@ -577,6 +577,10 @@ const AdminLogoutBtn = () => {
                 localStorage.clear();
                 alert(result.message);
                 navigate("/"); // Navigate to home page
+            } else if(response.status === 401) {
+                alert("Session expired. Please login again.");
+                localStorage.clear();
+                navigate("/"); // Navigate to home page
             } else {
                 alert(result.message || "Logout failed");
             }

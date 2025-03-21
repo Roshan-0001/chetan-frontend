@@ -17,8 +17,10 @@
   padding: 0;
   background: transparent;
 }
-.p-4{
+.loading-screen{
   background-color: #242424;
+  text-align: center;
+  margin-top: 50px;
 }
 input{
   padding: 5px 10px;
