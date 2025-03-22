@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    historyApiFallback: true,
+    historyApiFallback: true,  // Ensures correct routing locally
   },
   build: {
     rollupOptions: {
@@ -13,9 +13,5 @@ export default defineConfig({
       },
     },
   },
-  resolve: {
-    alias: {
-      '@': '/src',
-    },
-  },
+  base: '/',  // Ensures proper routing on deployment
 });
