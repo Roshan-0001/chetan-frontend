@@ -168,7 +168,11 @@ const Navbar = () => {
         setIsLoggedIn(false);
         setShowSidebar(false);
         alert(result.message);
-      } else {
+      } else if(response.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.clear();
+        navigate("/"); // Navigate to home page
+    } else {
         alert(result.message || "Logout failed");
       }
 
@@ -339,7 +343,6 @@ const Navbar = () => {
         <div className="sidebar">
           <div className="sidebar-content">
             <button className="close-btn" onClick={toggleSidebar}>✖</button>
-            {/* <img src={user.profileImage} alt="Profile" className="sidebar-pic" /> */}
             <h3>{user.role}</h3>
             <h2>{user.username}</h2>
             <p>{user.email}</p>
