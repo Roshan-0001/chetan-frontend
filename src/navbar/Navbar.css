@@ -13,7 +13,8 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     color: darkgrey;
     position: sticky;
-    background-color: rgb(46, 46, 46);
+    /* background-color: rgb(46, 46, 46); */
+    background-color: rgb(255, 198, 167);
   }
   
   /* Logo */
@@ -71,7 +72,8 @@
   
   .nav-links a {
     text-decoration: none;
-    color: darkgrey;
+    /* color: darkgrey; */
+    color: black;
     font-size: 14px;
     font-weight: 900 ;
   }

@@ -1,0 +1,107 @@
+/* Welcome Section */
+.welcome-section {
+  color: rgb(255, 89, 0);
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  font-size: 5rem;
+  font-weight: bold;
+  background: white;
+  padding: 50px 20px;
+}
+
+/* Shops Carousel */
+/* .box{
+  background-color: red;
+  width: 150px;
+}
+.carousel-card{
+  padding: 50px;
+}*/
+.slick-arrow{
+  margin:  10px;
+  padding: 10px;
+  background-color: black;
+  color: black;
+} 
+ .carousel-card{
+  padding: 50px;
+  margin: 50px;
+ }
+
+
+/* Product Categories */
+.categories-container {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  transition: all 1s ease-in-out;
+}
+
+.layout-0 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.layout-1 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.layout-2 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.category-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.category-image {
+  width: 100%;
+  display: block;
+  transition: transform 0.5s ease-in-out;
+}
+
+.category-card:hover .category-image {
+  transform: scale(1.1);
+}
+
+.category-name {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Footer */
+.footer-section {
+  background: #ececec;
+  padding: 20px;
+  text-align: center;
+  color: rgb(61, 61, 61);
+}
+
+.footer-columns {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.footer-column {
+  min-width: 150px;
+  margin: 10px;
+}
+
+.footer-column h3 {
+  font-weight: bold;
+}
+
+.footer-copy {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #666;
+}

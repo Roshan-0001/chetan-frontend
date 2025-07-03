@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar from "./navbar/Navbar.jsx";
 import AdminPanel from "./admin/adminPage/AdminPage.jsx";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import HomePage from "./homePage/HomePage.jsx";
 
 const url = import.meta.env.VITE_URL;
 
@@ -49,13 +50,14 @@ function App() {
         </div>
       ) : (
         <>
+        <Navbar />
           <Routes>
-            <Route path="/" element={<Navbar />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="*" element={<h1>404 - Page Not Found</h1>} /> {/* Handles unknown routes */}
           </Routes>
         </>
-      )}
+       )} 
     </Router>
   );
 }

@@ -171,6 +171,8 @@ const Navbar = () => {
       } else if(response.status === 401) {
         alert("Session expired. Please login again.");
         localStorage.clear();
+        setIsLoggedIn(false);
+        setShowSidebar(false);
         navigate("/"); // Navigate to home page
     } else {
         alert(result.message || "Logout failed");
