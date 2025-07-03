@@ -1,5 +1,5 @@
 import React from "react";
-import "./ShopMarqueeSlider.css";
+import "./shopMarqueeSlider.css";
 
 export default function ShopMarqueeSlider({ shops = [] }) {
   // Duplicate data to achieve seamless loop effect

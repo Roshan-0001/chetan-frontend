@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./ShopSlider.css";
+import "./shopSlider.css";
 
 export default function ShopSlider({ shops, onCardClick }) {
   const scrollRef = useRef(null);
